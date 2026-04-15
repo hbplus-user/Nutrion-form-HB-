@@ -3,8 +3,12 @@ import type { Assessment } from '../types';
 import {
   Printer,
   ChevronLeft,
-  FileEdit
+  FileEdit,
+  Loader2
 } from 'lucide-react';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
+import { supabase } from '../lib/supabase';
 
 interface ReportViewProps {
   assessment: Assessment;
@@ -13,7 +17,61 @@ interface ReportViewProps {
 }
 
 const ReportView: React.FC<ReportViewProps> = ({ assessment, onBack, onEdit }) => {
-  const printReport = () => window.print();
+  const [isExporting, setIsExporting] = React.useState(false);
+
+  const printReport = async () => {
+    setIsExporting(true);
+    try {
+      // 1. Target the report content
+      const reportElement = document.querySelector('.report-sheet-a4') as HTMLElement;
+      if (!reportElement) return;
+
+      // 2. Capture as canvas
+      const canvas = await html2canvas(reportElement, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#ffffff'
+      });
+
+      // 3. Convert to PDF
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'px',
+        format: 'a4'
+      });
+
+      const imgProps = pdf.getImageProperties(imgData);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      const pdfBlob = pdf.output('blob');
+
+      // 4. Upload to Supabase Storage
+      const fileName = `report_${assessment.uhid || 'P'}_${Date.now()}.pdf`;
+      const { data, error } = await supabase.storage
+        .from('reports-bucket')
+        .upload(fileName, pdfBlob, {
+          contentType: 'application/pdf',
+          upsert: true
+        });
+
+      if (error) {
+        console.error('Upload error:', error);
+      } else {
+        console.log('Report uploaded successfully:', data.path);
+      }
+
+      // 5. Finally, open browser print dialog for the user
+      window.print();
+    } catch (err) {
+      console.error('Export failed:', err);
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   // Helper to parse complex diagnosis string if needed, 
   // but we'll assume the diagnosis field might contain the tags.
@@ -32,8 +90,13 @@ const ReportView: React.FC<ReportViewProps> = ({ assessment, onBack, onEdit }) =
           <FileEdit size={16} /> Edit clinical Profile
         </button>
         
-        <button onClick={printReport} className="btn-v5-primary">
-          <Printer size={16} /> Print / Export PDF
+        <button 
+          onClick={printReport} 
+          className="btn-v5-primary" 
+          disabled={isExporting}
+        >
+          {isExporting ? <Loader2 size={16} className="animate-spin" /> : <Printer size={16} />} 
+          {isExporting ? 'Generating PDF...' : 'Print / Export PDF'}
         </button>
       </div>
 
