@@ -3,8 +3,6 @@ import type { Assessment } from '../types';
 import {
   Printer,
   ChevronLeft,
-  CheckCircle2,
-  AlertTriangle,
   FileEdit
 } from 'lucide-react';
 
@@ -118,8 +116,8 @@ const ReportView: React.FC<ReportViewProps> = ({ assessment, onBack, onEdit }) =
           <div className="v5-badge-row">
             {assessment.bmi > 25 && <span className="v5-badge red">BMi {assessment.bmi} — Overweight</span>}
             <span className="v5-badge orange">High Stress (Level {assessment.stress_level})</span>
-            {assessment.gut_symptoms?.length > 0 && (
-               <span className="v5-badge yellow">Gut Issues: {assessment.gut_symptoms.join(', ')}</span>
+            {(assessment.gut_symptoms?.length ?? 0) > 0 && (
+               <span className="v5-badge yellow">Gut Issues: {assessment.gut_symptoms?.join(', ')}</span>
             )}
           </div>
         </div>
