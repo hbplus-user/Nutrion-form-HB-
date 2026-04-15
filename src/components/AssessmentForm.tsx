@@ -58,17 +58,17 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onSuccess, initialData 
   const [loading, setLoading] = useState(false);
 
   // Section 1 – Anthropometric
-  const [clientName, setClientName] = useState(initialData?.client_name || 'Jeet Basa');
-  const [uhid, setUhid] = useState(initialData?.uhid || 'HB-9642');
-  const [age, setAge] = useState(initialData?.age?.toString() || '32');
-  const [sex, setSex] = useState(initialData?.gender || 'Male');
-  const [height, setHeight] = useState(initialData?.height?.toString() || '5.10'); // ft.in format
-  const [weight, setWeight] = useState(initialData?.weight?.toString() || '162'); // kg
-  const [location, setLocation] = useState(initialData?.location || 'Bhubaneswar');
-  const [jobActivity, setJobActivity] = useState(initialData?.occupation || 'Construction Business — frequent travel');
-  const [lifestyle, setLifestyle] = useState(initialData?.lifestyle || 'On the Move');
-  const [stepCount, setStepCount] = useState('8,000–10,000 steps'); // This wasn't explicitly in schema, usually stays same
-  const [physicalActivity, setPhysicalActivity] = useState(initialData?.physical_activity || 'Gym 4x/week');
+  const [clientName, setClientName] = useState(initialData?.client_name || '');
+  const [uhid, setUhid] = useState(initialData?.uhid || '');
+  const [age, setAge] = useState(initialData?.age?.toString() || '');
+  const [sex, setSex] = useState(initialData?.gender || '');
+  const [height, setHeight] = useState(initialData?.height?.toString() || ''); // ft.in format
+  const [weight, setWeight] = useState(initialData?.weight?.toString() || ''); // kg
+  const [location, setLocation] = useState(initialData?.location || '');
+  const [jobActivity, setJobActivity] = useState(initialData?.occupation || '');
+  const [lifestyle, setLifestyle] = useState(initialData?.lifestyle || '');
+  const [stepCount, setStepCount] = useState(''); 
+  const [physicalActivity, setPhysicalActivity] = useState(initialData?.physical_activity || '');
 
   // Computed
   const bmi = calcBMI(parseFloat(weight) || 0, height);
@@ -78,73 +78,73 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onSuccess, initialData 
 
   // Section 2 – Biochemical
   const [bloodReportsAvailable, setBloodReportsAvailable] = useState<'Yes' | 'No' | ''>(initialData ? 'Yes' : '');
-  const [reportDate, setReportDate] = useState('14 Apr 2026');
-  const [fbs, setFbs] = useState(initialData?.fasting_sugar?.toString() || '112 mg/dL');
-  const [hba1c, setHba1c] = useState('6.2%');
-  const [lipidProfile, setLipidProfile] = useState('LDL 142, HDL 38, TG 210');
-  const [tsh, setTsh] = useState('4.8 mIU/L');
-  const [haemoglobin, setHaemoglobin] = useState('14.2 g/dL');
-  const [ironFerritin, setIronFerritin] = useState('Ferritin 45');
-  const [vitaminB12, setVitaminB12] = useState('220 pg/mL');
-  const [vitaminD, setVitaminD] = useState('22 ng/mL');
-  const [liverEnzymes, setLiverEnzymes] = useState('AST 35, ALT 42');
-  const [kidneyProfile, setKidneyProfile] = useState('Creatinine 1.0');
-  const [thyroidAntiTPO, setThyroidAntiTPO] = useState('Anti-TPO 12');
-  const [hormonalProfile, setHormonalProfile] = useState('Normal');
-  const [otherFlags, setOtherFlags] = useState('Uric Acid 7.2');
+  const [reportDate, setReportDate] = useState('');
+  const [fbs, setFbs] = useState(initialData?.fasting_sugar?.toString() || '');
+  const [hba1c, setHba1c] = useState('');
+  const [lipidProfile, setLipidProfile] = useState('');
+  const [tsh, setTsh] = useState('');
+  const [haemoglobin, setHaemoglobin] = useState('');
+  const [ironFerritin, setIronFerritin] = useState('');
+  const [vitaminB12, setVitaminB12] = useState('');
+  const [vitaminD, setVitaminD] = useState('');
+  const [liverEnzymes, setLiverEnzymes] = useState('');
+  const [kidneyProfile, setKidneyProfile] = useState('');
+  const [thyroidAntiTPO, setThyroidAntiTPO] = useState('');
+  const [hormonalProfile, setHormonalProfile] = useState('');
+  const [otherFlags, setOtherFlags] = useState('');
 
   // Section 3 – Clinical
-  const [medicalConcerns, setMedicalConcerns] = useState(initialData?.diagnosis?.split('PRESENT MEDICAL CONCERNS:\n')[1] || 'Metabolic Syndrome, Grade 1 Fatty Liver, Pre-diabetic');
-  const [symptomsReported, setSymptomsReported] = useState('Abdominal bloating, Acid reflux, Afternoon energy crash, Sleep apnea signs');
-  const [pastSurgeries, setPastSurgeries] = useState(initialData?.past_surgeries || 'Appendix removal (2018)');
-  const [currentMedications, setCurrentMedications] = useState(initialData?.medications || 'Multi-vitamin, Omeprazole as needed');
-  const [skinHairNail, setSkinHairNail] = useState(initialData?.skin_hair_nail || 'Dry skin, dandruff issues');
-  const [menstrualHealth, setMenstrualHealth] = useState('N/A');
+  const [medicalConcerns, setMedicalConcerns] = useState(initialData?.diagnosis?.split('PRESENT MEDICAL CONCERNS:\n')[1] || '');
+  const [symptomsReported, setSymptomsReported] = useState('');
+  const [pastSurgeries, setPastSurgeries] = useState(initialData?.past_surgeries || '');
+  const [currentMedications, setCurrentMedications] = useState(initialData?.medications || '');
+  const [skinHairNail, setSkinHairNail] = useState(initialData?.skin_hair_nail || '');
+  const [menstrualHealth, setMenstrualHealth] = useState('');
 
   // Section 4 – Gut Health
-  const [waterIntake, setWaterIntake] = useState('3-4 Liters');
-  const [eatingPattern, setEatingPattern] = useState('Irregular, heavy dinners');
-  const [gutSymptoms, setGutSymptoms] = useState<string[]>(initialData?.gut_symptoms || ['Bloating', 'Acid Reflux / Heartburn', 'Flatulence']);
-  const [foodIntolerances, setFoodIntolerances] = useState('Dairy, Gluten (high sensitivity)');
-  const [stoolFrequency, setStoolFrequency] = useState('Once daily, occasionally loose');
+  const [waterIntake, setWaterIntake] = useState('');
+  const [eatingPattern, setEatingPattern] = useState('');
+  const [gutSymptoms, setGutSymptoms] = useState<string[]>(initialData?.gut_symptoms || []);
+  const [foodIntolerances, setFoodIntolerances] = useState('');
+  const [stoolFrequency, setStoolFrequency] = useState('');
 
   // Section 5 – Lifestyle
-  const [sleepQuality, setSleepQuality] = useState(initialData?.sleep_hours ? 'Good' : 'Poor');
-  const [sleepDuration, setSleepDuration] = useState(initialData?.sleep_hours?.toString() || '6 hours');
-  const [stressLevel, setStressLevel] = useState(initialData?.stress_level || 8);
-  const [energyLevels, setEnergyLevels] = useState('High morning, significant crash post-lunch and late evening');
+  const [sleepQuality, setSleepQuality] = useState(initialData?.sleep_hours ? 'Good' : '');
+  const [sleepDuration, setSleepDuration] = useState(initialData?.sleep_hours?.toString() || '');
+  const [stressLevel, setStressLevel] = useState(initialData?.stress_level || 5);
+  const [energyLevels, setEnergyLevels] = useState('');
 
   // Section 6 – Dietary Assessment
-  const [dietType, setDietType] = useState(initialData?.diet_type || 'Non-Vegetarian');
-  const [wakeUpTime, setWakeUpTime] = useState('6:30 AM');
-  const [preBreakfast, setPreBreakfast] = useState('Black coffee');
-  const [breakfast, setBreakfast] = useState(initialData?.dietary_breakfast || 'Poha or Eggs with bread');
-  const [midMorning, setMidMorning] = useState('Fruit or Tea');
-  const [lunch, setLunch] = useState(initialData?.dietary_lunch || 'Chicken Curry, Rice, Salad');
-  const [eveningSnack, setEveningSnack] = useState('Biscuits and Milk tea');
-  const [dinner, setDinner] = useState(initialData?.dietary_dinner || 'Roti, Sabji, Dal, occasionally Mutton');
-  const [postDinner, setPostDinner] = useState('None');
-  const [teaCoffee, setTeaCoffee] = useState('3 cups mixed milk tea');
-  const [fruitIntake, setFruitIntake] = useState('Moderate, 3x/week');
-  const [foodAllergies, setFoodAllergies] = useState('Prawns');
-  const [smoking, setSmoking] = useState(initialData?.dietary_smoking || 'Yes (Socially)');
-  const [alcoholIntake, setAlcoholIntake] = useState(initialData?.dietary_alcohol || '2x/week');
-  const [outsideMeals, setOutsideMeals] = useState(initialData?.dietary_outside || '3x/week');
+  const [dietType, setDietType] = useState(initialData?.diet_type || '');
+  const [wakeUpTime, setWakeUpTime] = useState('');
+  const [preBreakfast, setPreBreakfast] = useState('');
+  const [breakfast, setBreakfast] = useState(initialData?.dietary_breakfast || '');
+  const [midMorning, setMidMorning] = useState('');
+  const [lunch, setLunch] = useState(initialData?.dietary_lunch || '');
+  const [eveningSnack, setEveningSnack] = useState('');
+  const [dinner, setDinner] = useState(initialData?.dietary_dinner || '');
+  const [postDinner, setPostDinner] = useState('');
+  const [teaCoffee, setTeaCoffee] = useState('');
+  const [fruitIntake, setFruitIntake] = useState('');
+  const [foodAllergies, setFoodAllergies] = useState('');
+  const [smoking, setSmoking] = useState(initialData?.dietary_smoking || '');
+  const [alcoholIntake, setAlcoholIntake] = useState(initialData?.dietary_alcohol || '');
+  const [outsideMeals, setOutsideMeals] = useState(initialData?.dietary_outside || '');
 
   // Section 7 – Dietitian's Clinical Impression & Plan
   const [diagnosisTags, setDiagnosisTags] = useState<string[]>(
     initialData?.diagnosis?.includes('HB+ CLINICAL FINDINGS:')
       ? initialData.diagnosis.split('HB+ CLINICAL FINDINGS:\n')[1]?.split('\n\n')[0]?.split('\n') || []
-      : ['Insulin Resistance', 'Gut Dysbiosis', 'Phase 1 Fatty Liver Detox']
+      : []
   );
   const [diagnosisInput, setDiagnosisInput] = useState('');
   const [treatmentGoalTags, setTreatmentGoalTags] = useState<string[]>(
-    initialData?.recommendations?.filter(r => r.startsWith('GOAL:')).map(g => g.replace('GOAL: ', '')) || ['Sustainable fat loss', 'Improve gut integrity', 'Stabilise blood sugar']
+    initialData?.recommendations?.filter(r => r.startsWith('GOAL:')).map(g => g.replace('GOAL: ', '')) || []
   );
   const [treatmentGoalInput, setTreatmentGoalInput] = useState('');
-  const [planName, setPlanName] = useState(initialData?.recommendations?.find(r => r.startsWith('PLAN:'))?.replace('PLAN: ', '') || 'FAT LOSS AND METABOLIC RESET PLAN — 12 WEEKS');
-  const [planDuration, setPlanDuration] = useState('12 Weeks');
-  const [bloodTests, setBloodTests] = useState(initialData?.recommendations?.find(r => r.startsWith('BLOOD TESTS:'))?.replace('BLOOD TESTS: ', '') || 'CBC, HBA1C, Lipid Profile, Liver Function Test (LFT), Vitamin B12 & D, HS-CRP');
+  const [planName, setPlanName] = useState(initialData?.recommendations?.find(r => r.startsWith('PLAN:'))?.replace('PLAN: ', '') || '');
+  const [planDuration, setPlanDuration] = useState('');
+  const [bloodTests, setBloodTests] = useState(initialData?.recommendations?.find(r => r.startsWith('BLOOD TESTS:'))?.replace('BLOOD TESTS: ', '') || '');
 
   const addTag = (list: string[], setList: (v: string[]) => void, value: string) => {
     const trimmed = value.trim();
