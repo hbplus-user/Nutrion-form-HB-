@@ -105,7 +105,6 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onSuccess, initialData 
   const [waterIntake, setWaterIntake] = useState('');
   const [eatingPattern, setEatingPattern] = useState('');
   const [gutSymptoms, setGutSymptoms] = useState<string[]>(initialData?.gut_symptoms || []);
-  const [foodIntolerances, setFoodIntolerances] = useState('');
   const [stoolFrequency, setStoolFrequency] = useState('');
   const [gutNotes, setGutNotes] = useState(initialData?.gut_notes || '');
 
@@ -165,7 +164,7 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onSuccess, initialData 
     setLiverEnzymes(''); setKidneyProfile(''); setThyroidAntiTPO(''); setHormonalProfile(''); setOtherFlags('');
     setMedicalConcerns(''); setSymptomsReported(''); setPastSurgeries(''); setCurrentMedications('');
     setSkinHairNail(''); setMenstrualHealth('');
-    setWaterIntake(''); setEatingPattern(''); setGutSymptoms([]); setGutNotes(''); setFoodIntolerances(''); setStoolFrequency('');
+    setWaterIntake(''); setEatingPattern(''); setGutSymptoms([]); setGutNotes(''); setStoolFrequency('');
     setSleepQuality(''); setSleepDuration(''); setStressLevel(5); setEnergyLevels('');
     setDietType(''); setWakeUpTime(''); setPreBreakfast(''); setBreakfast(''); setMidMorning('');
     setLunch(''); setEveningSnack(''); setDinner(''); setPostDinner(''); setTeaCoffee('');
