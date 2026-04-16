@@ -107,13 +107,12 @@ const ReportView: React.FC<ReportViewProps> = ({ assessment, onBack, onEdit }) =
             <img src="/hb-logo.png" alt="HB+" className="report-logo-v5" />
             <div className="brand-text-wrapper">
               <h1>Nutrition Assessment Report</h1>
-              <p>Certified Clinical Analysis — HB+ Protocol v2.4</p>
             </div>
           </div>
           <div className="header-client-v5">
             <div className="name-v5">{assessment.client_name}</div>
             <div className="date-v5">
-              UHID: {assessment.uhid || 'P-4282'} • {new Date().toLocaleDateString('en-GB')} {new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: true })}
+              UHID: {assessment.uhid || 'P-4282'} • {assessment.phone || '+91 00000 00000'}
             </div>
           </div>
         </div>
@@ -150,20 +149,10 @@ const ReportView: React.FC<ReportViewProps> = ({ assessment, onBack, onEdit }) =
               <tr>
                 <td><strong>Age / Sex</strong></td>
                 <td>{assessment.age}y • {assessment.gender}</td>
-                <td><strong>Location</strong></td>
-                <td>{assessment.location}</td>
-              </tr>
-              <tr>
-                <td><strong>Occupation</strong></td>
-                <td>{assessment.occupation}</td>
-                <td><strong>Lifestyle</strong></td>
-                <td>{assessment.lifestyle || 'Standard'}</td>
-              </tr>
-              <tr>
                 <td><strong>Diet Type</strong></td>
                 <td>{assessment.diet_type}</td>
-                <td><strong>Gut Symptoms</strong></td>
-                <td>{assessment.gut_symptoms?.join(', ') || 'None reported'}</td>
+                <td><strong>Report Date</strong></td>
+                <td>{new Date().toLocaleDateString('en-GB')}</td>
               </tr>
               <tr>
                 <td><strong>Medications</strong></td>
@@ -185,16 +174,39 @@ const ReportView: React.FC<ReportViewProps> = ({ assessment, onBack, onEdit }) =
           </div>
         </div>
 
-        {/* Diagnosis Cards */}
+        {/* HB+ Diagnosis */}
         <div className="v5-section">
           <div className="v5-section-title">HB+ Diagnosis</div>
-          <div className="v5-diag-grid">
+          <div className="v5-diag-grid-detailed">
             {findings.map((f, i) => (
-              <div key={i} className="v5-diag-card">
-                <div className="v5-diag-icon">✦</div>
-                <div className="v5-diag-text">{f.replace(/^[•\s*-]+/, '')}</div>
+              <div key={i} className="v5-diag-item-large">
+                <div className="v5-diag-bullet">✦</div>
+                <div className="v5-diag-content">
+                  <div className="v5-diag-text-large">{f.replace(/^[•\s*-]+/, '')}</div>
+                </div>
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* Gut Health Details */}
+        <div className="v5-section">
+          <div className="v5-section-title">Gut Health Assessment</div>
+          <div className="v5-gut-details">
+            <div className="v5-gut-symptoms-row">
+              <strong>Symptoms Reported:</strong>
+              <div className="v5-gut-chips">
+                {assessment.gut_symptoms?.map(s => (
+                  <span key={s} className="v5-gut-chip">{s}</span>
+                )) || <span className="text-smoke">None reported</span>}
+              </div>
+            </div>
+            {assessment.gut_notes && (
+              <div className="v5-gut-notes-box">
+                <strong>Clinician Notes:</strong>
+                <p>{assessment.gut_notes}</p>
+              </div>
+            )}
           </div>
         </div>
 
@@ -225,65 +237,7 @@ const ReportView: React.FC<ReportViewProps> = ({ assessment, onBack, onEdit }) =
           </div>
         </div>
 
-        {/* Clinical Notes */}
-        <div className="v5-section">
-          <div className="v5-section-title">Clinical Notes</div>
-          <table className="v5-table">
-            <tbody>
-              {assessment.past_surgeries && (
-                <tr>
-                  <td><strong>Past Surgeries</strong></td>
-                  <td>{assessment.past_surgeries}</td>
-                </tr>
-              )}
-              {assessment.skin_hair_nail && (
-                <tr>
-                  <td><strong>Skin / Hair</strong></td>
-                  <td>{assessment.skin_hair_nail}</td>
-                </tr>
-              )}
-              {assessment.medications && (
-                <tr>
-                  <td><strong>Intolerances</strong></td>
-                  <td>{assessment.medications}</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
 
-        {/* Dietary Snapshot */}
-        <div className="v5-section">
-          <div className="v5-section-title">Dietary Snapshot</div>
-          <table className="v5-table">
-            <tbody>
-              <tr>
-                <td><strong>Breakfast</strong></td>
-                <td>{assessment.dietary_breakfast || '—'}</td>
-              </tr>
-              <tr>
-                <td><strong>Lunch</strong></td>
-                <td>{assessment.dietary_lunch || '—'}</td>
-              </tr>
-              <tr>
-                <td><strong>Dinner</strong></td>
-                <td>{assessment.dietary_dinner || '—'}</td>
-              </tr>
-              <tr>
-                <td><strong>Alcohol</strong></td>
-                <td>{assessment.dietary_alcohol || '—'}</td>
-              </tr>
-              <tr>
-                <td><strong>Outside Meals</strong></td>
-                <td>{assessment.dietary_outside || '—'}</td>
-              </tr>
-              <tr>
-                <td><strong>Smoking</strong></td>
-                <td>{assessment.dietary_smoking || '—'}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
 
         {/* Formatted Blood Tests */}
         <div className="v5-section">
@@ -295,7 +249,7 @@ const ReportView: React.FC<ReportViewProps> = ({ assessment, onBack, onEdit }) =
 
         {/* Footer Disclaimer */}
         <div className="v5-footer">
-          <p><strong>Disclaimer:</strong> This assessment is based on client-provided info and anthropometric markers. Suggesions are nutritional and lifestyle-related only. This is not a medical prescription. HB+ Hyderabad — Hyderabad, India. Support: +91 9999999999 • hb-plus.co.in</p>
+          <p><strong>Disclaimer:</strong> This assessment is based on client-provided info and anthropometric markers. Suggestions are nutritional and lifestyle-related only. This is not a medical prescription. Support: +91 91544 55152 • healingbodiesplus.com</p>
         </div>
       </div>
 
@@ -405,27 +359,28 @@ const ReportView: React.FC<ReportViewProps> = ({ assessment, onBack, onEdit }) =
         .v5-badge.orange { background: #ffedd5; color: #9a3412; }
         .v5-badge.yellow { background: #fef9c3; color: #854d0e; }
 
-        .v5-diag-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .v5-diag-card { 
-          background: var(--sage-pale); 
-          border: 1.5px solid var(--border); 
-          padding: 14px; 
+        .v5-diag-grid-detailed { display: flex; flex-direction: column; gap: 8px; }
+        .v5-diag-item-large { 
+          background: #fdfdfd; 
+          border: 1px solid #eee; 
+          padding: 16px 20px; 
           border-radius: 12px; 
           display: flex; 
-          gap: 12px;
-          align-items: center;
+          gap: 15px; 
+          align-items: flex-start;
+          transition: all 0.2s ease;
         }
-        .v5-diag-icon { color: var(--clay); font-size: 18px; }
-        .v5-diag-text { font-size: 13px; font-weight: 700; color: var(--ink); }
+        .v5-diag-bullet { color: var(--clay); font-size: 18px; line-height: 1; margin-top: 2px; }
+        .v5-diag-text-large { font-size: 14px; font-weight: 700; color: var(--charcoal); line-height: 1.5; }
 
-        .v5-goal-item { display: flex; gap: 14px; align-items: center; background: var(--mist); padding: 12px; border-radius: 10px; margin-bottom: 8px; border-left: 4px solid var(--sage); }
-        .v5-goal-num { width: 24px; height: 24px; background: var(--sage); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; }
-        .v5-goal-text { font-size: 13px; font-weight: 600; color: var(--ink); }
-
-        .v5-plan-banner { background: var(--sage); color: white; padding: 16px; border-radius: 10px 10px 0 0; font-family: 'DM Serif Display', serif; font-size: 20px; text-transform: uppercase; text-align: center; letter-spacing: 1px; }
-        .v5-plan-bullets { background: var(--sage-pale); border: 1px solid var(--border); border-top: none; padding: 20px; border-radius: 0 0 10px 10px; }
-        .v5-pb-item { display: flex; gap: 10px; font-size: 13px; line-height: 1.6; margin-bottom: 10px; color: var(--ink); font-weight: 600; }
-        .v5-pb-item span { color: var(--sage); font-weight: 800; font-size: 16px; }
+        .v5-gut-details { background: var(--mist); padding: 20px; border-radius: 12px; border: 1px solid var(--border); }
+        .v5-gut-symptoms-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+        .v5-gut-symptoms-row strong { font-size: 11px; text-transform: uppercase; color: var(--smoke); letter-spacing: 0.5px; }
+        .v5-gut-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+        .v5-gut-chip { background: #fee2e2; color: #991b1b; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; }
+        .v5-gut-notes-box { border-top: 1px solid #e2e2e2; padding-top: 12px; margin-top: 8px; }
+        .v5-gut-notes-box strong { font-size: 11px; text-transform: uppercase; color: var(--smoke); letter-spacing: 0.5px; display: block; margin-bottom: 8px; }
+        .v5-gut-notes-box p { font-size: 13px; color: var(--ink); line-height: 1.6; margin: 0; font-weight: 500; }
 
         .v5-blood-box { background: var(--mist); border: 1.5px dashed var(--sage); padding: 20px; border-radius: 12px; font-size: 13px; line-height: 1.7; color: var(--ink); font-weight: 600; font-family: 'DM Mono', monospace; }
 

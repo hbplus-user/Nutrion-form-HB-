@@ -28,6 +28,7 @@ export interface Assessment {
   // Conditions & Symptoms
   conditions: string[];
   gut_symptoms?: string[];
+  gut_notes?: string;
   diet_type?: string;
   medications?: string;
   

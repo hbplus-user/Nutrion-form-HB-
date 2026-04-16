@@ -64,7 +64,7 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onSuccess, initialData 
   const [sex, setSex] = useState(initialData?.gender || '');
   const [height, setHeight] = useState(initialData?.height?.toString() || ''); // ft.in format
   const [weight, setWeight] = useState(initialData?.weight?.toString() || ''); // kg
-  const [location, setLocation] = useState(initialData?.location || '');
+  const [phone, setPhone] = useState(initialData?.phone || '');
   const [jobActivity, setJobActivity] = useState(initialData?.occupation || '');
   const [lifestyle, setLifestyle] = useState(initialData?.lifestyle || '');
   const [stepCount, setStepCount] = useState(''); 
@@ -107,6 +107,7 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onSuccess, initialData 
   const [gutSymptoms, setGutSymptoms] = useState<string[]>(initialData?.gut_symptoms || []);
   const [foodIntolerances, setFoodIntolerances] = useState('');
   const [stoolFrequency, setStoolFrequency] = useState('');
+  const [gutNotes, setGutNotes] = useState(initialData?.gut_notes || '');
 
   // Section 5 – Lifestyle
   const [sleepQuality, setSleepQuality] = useState(initialData?.sleep_hours ? 'Good' : '');
@@ -157,14 +158,14 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onSuccess, initialData 
 
   const clearForm = () => {
     if (!confirm('Clear all form data?')) return;
-    setClientName(''); setAge(''); setSex('Female'); setHeight(''); setWeight('');
-    setLocation(''); setJobActivity(''); setLifestyle(''); setStepCount(''); setPhysicalActivity('');
+    setClientName(''); setPhone(''); setAge(''); setSex('Female'); setHeight(''); setWeight('');
+    setJobActivity(''); setLifestyle(''); setStepCount(''); setPhysicalActivity('');
     setBloodReportsAvailable(''); setReportDate(''); setFbs(''); setHba1c(''); setLipidProfile('');
     setTsh(''); setHaemoglobin(''); setIronFerritin(''); setVitaminB12(''); setVitaminD('');
     setLiverEnzymes(''); setKidneyProfile(''); setThyroidAntiTPO(''); setHormonalProfile(''); setOtherFlags('');
     setMedicalConcerns(''); setSymptomsReported(''); setPastSurgeries(''); setCurrentMedications('');
     setSkinHairNail(''); setMenstrualHealth('');
-    setWaterIntake(''); setEatingPattern(''); setGutSymptoms([]); setFoodIntolerances(''); setStoolFrequency('');
+    setWaterIntake(''); setEatingPattern(''); setGutSymptoms([]); setGutNotes(''); setFoodIntolerances(''); setStoolFrequency('');
     setSleepQuality(''); setSleepDuration(''); setStressLevel(5); setEnergyLevels('');
     setDietType(''); setWakeUpTime(''); setPreBreakfast(''); setBreakfast(''); setMidMorning('');
     setLunch(''); setEveningSnack(''); setDinner(''); setPostDinner(''); setTeaCoffee('');
@@ -190,9 +191,7 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onSuccess, initialData 
         uhid: uhid,
         age: parseInt(age) || null,
         gender: sex.toLowerCase() as any,
-        phone: '',
-        email: '',
-        location: location,
+        phone: phone,
         occupation: jobActivity,
         weight: parseFloat(weight) || null,
         height: parseFloat(height) || null,
@@ -206,6 +205,7 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onSuccess, initialData 
         conditions: [],
         gut_symptoms: gutSymptoms,
         diet_type: dietType,
+        gut_notes: gutNotes,
         medications: currentMedications,
         physical_activity: physicalActivity,
         lifestyle: lifestyle,
@@ -303,8 +303,8 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onSuccess, initialData 
                 <input type="number" value={weight} onChange={e => setWeight(e.target.value)} placeholder="e.g. 55" />
               </div>
               <div className="nai-field">
-                <label>LOCATION / CITY</label>
-                <input value={location} onChange={e => setLocation(e.target.value)} placeholder="—" />
+                <label>PHONE NUMBER</label>
+                <input value={phone} onChange={e => setPhone(e.target.value)} placeholder="e.g. +91 91544 55152" />
               </div>
             </div>
 
@@ -553,13 +553,19 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onSuccess, initialData 
 
             <div className="nai-grid-2" style={{ marginTop: 14 }}>
               <div className="nai-field">
-                <label>FOOD INTOLERANCES / TRIGGERS</label>
-                <input value={foodIntolerances} onChange={e => setFoodIntolerances(e.target.value)} placeholder="e.g. Bread (constipation trigger)" />
-              </div>
-              <div className="nai-field">
                 <label>DAILY STOOL FREQUENCY</label>
                 <input value={stoolFrequency} onChange={e => setStoolFrequency(e.target.value)} placeholder="e.g. Regular once/day, irregular" />
               </div>
+            </div>
+
+            <div className="nai-field" style={{ marginTop: 14 }}>
+              <label>ADDITIONAL GUT HEALTH NOTES</label>
+              <textarea
+                value={gutNotes}
+                onChange={e => setGutNotes(e.target.value)}
+                placeholder="e.g. Symptoms triggered by dairy; intermittent bloating in evenings..."
+                rows={3}
+              />
             </div>
           </div>
         </div>
@@ -721,23 +727,25 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onSuccess, initialData 
                   ))}
                   {diagnosisTags.length === 0 && <div className="text-[11px] text-smoke opacity-50 pl-1">No findings added yet. Press [+] to list points.</div>}
                 </div>
-                <div className="nai-tag-row">
-                  <input
+                <div className="nai-tag-row" style={{ marginTop: 12 }}>
+                  <textarea
                     className="nai-tag-field"
+                    style={{ minHeight: '80px', paddingTop: '10px' }}
                     value={diagnosisInput}
                     onChange={e => setDiagnosisInput(e.target.value)}
                     onKeyDown={e => {
-                      if (e.key === 'Enter') {
+                      if (e.key === 'Enter' && !e.shiftKey) {
                         e.preventDefault();
                         addTag(diagnosisTags, setDiagnosisTags, diagnosisInput);
                         setDiagnosisInput('');
                       }
                     }}
-                    placeholder="Type finding and press Enter or + …"
+                    placeholder="Type finding and press Enter or + to list as point…"
                   />
                   <button
                     type="button"
                     className="nai-tag-add-btn"
+                    style={{ height: '80px' }}
                     onClick={() => { addTag(diagnosisTags, setDiagnosisTags, diagnosisInput); setDiagnosisInput(''); }}
                   >+</button>
                 </div>
