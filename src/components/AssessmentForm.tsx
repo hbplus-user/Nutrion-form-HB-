@@ -791,6 +791,11 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onSuccess, initialData 
               <div className="nai-field">
                 <label>RECOMMENDED PLAN NAME</label>
                 <input value={planName} onChange={e => setPlanName(e.target.value)} placeholder="e.g. FAT LOSS AND METABOLIC RESET PLAN — 12 WEEK" />
+                <div className="nai-chip-suggestions">
+                   {['FAT LOSS & METABOLIC RESET', 'THYROID REGULATION', 'GUT MICROBIOME', 'PCOS MANAGEMENT', 'DIABETES CARE'].map(p => (
+                      <button key={p} type="button" className="nai-chip-mini" onClick={() => setPlanName(p)}>{p} Plan</button>
+                   ))}
+                </div>
               </div>
               <div className="nai-field">
                 <label>PLAN DURATION</label>

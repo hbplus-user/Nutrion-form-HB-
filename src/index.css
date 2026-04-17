@@ -1526,3 +1526,33 @@ body {
   max-width: 120px; 
   overflow: hidden; 
 }
+
+/* Plan Suggestion Chips */
+.nai-chip-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.nai-chip-mini {
+  background: #fdfdfd;
+  border: 1px solid var(--border);
+  color: var(--sage);
+  font-size: 10px;
+  font-weight: 800;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.2s ease;
+  letter-spacing: 0.3px;
+  line-height: 1;
+}
+
+.nai-chip-mini:hover {
+  background: var(--sage);
+  color: white;
+  border-color: var(--sage);
+  transform: translateY(-1px);
+}

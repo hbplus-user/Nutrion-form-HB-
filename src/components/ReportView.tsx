@@ -16,6 +16,74 @@ interface ReportViewProps {
   onEdit: () => void;
 }
 
+const getPlanBullets = (planName: string) => {
+  const name = planName.toUpperCase();
+  
+  if (name.includes('FAT LOSS') || name.includes('METABOLIC RESET')) {
+    return [
+      'Improves metabolic rate, energy balance, reduces excess body fat and elevated BMI, with balanced meals and portion control',
+      'Enhances fat metabolism, helping the body utilize stored fat more efficiently, by improving meal quality and nutrient distribution.',
+      'Regulates appetite, cravings, and prevents overeating, with improved hormonal signaling and proper meal timing.',
+      'Supports blood sugar stability, reduces energy crashes and fatigue, by avoiding long gaps and improving insulin sensitivity.',
+      'Reduces internal inflammation, which is often the root cause of weight gain and metabolic issues.',
+      'Improves gut-brain axis function and vagus nerve signalling to manage stress, cravings, and digestion, with food and lifestyle.',
+      'Supports better sleep and reduces cortisol imbalance, through regulated lifestyle habits, helping improve recovery and fat loss.',
+      'Enhances skin health and immunity with anti-oxidant, anti-inflammatory and micro nutrient dense food groups.',
+      'Regulates appetite and reduces unexplained weight gain, by maintaining structured meals and balanced nutrition.'
+    ];
+  }
+  
+  if (name.includes('THYROID')) {
+    return [
+      'Supports thyroid hormone balance, improves metabolism and helps reduce weight, by ensuring nutrient-rich and balanced meals.',
+      'Enhances T4 to T3 conversion, improves energy levels and metabolic activity, by correcting nutrient deficiencies and gut microbiome.',
+      'Improves gut-thyroid axis function, better hormone regulation and digestion with gut-friendly foods inclusion.',
+      'Reduces fatigue, improves energy level, and supports better daily functioning, by improving mitochondrial energy production.',
+      'Supports hormonal balance, reduces inflammation, improves food quality and lifestyle, helping improve overall thyroid health.',
+      'Improves thyroid function, by correcting nutrient absorption, and underlying deficiencies such as iodine, selenium and zinc.'
+    ];
+  }
+  
+  if (name.includes('GUT MICROBIOME') || name.includes('GUT HEALTH')) {
+    return [
+      'Restores gut microbiota balance, improves digestion and overall gut function, by including gut-healing and easily digestible foods.',
+      'Enhances nutrient absorption, improves energy level and correct deficiencies, by improving digestion.',
+      'Reduces bloating, acidity, and digestive discomfort, by maintaining a balanced and simple meal pattern.',
+      'Supports gut-brain axis, helping improve mood, cravings, sleep and stress response.',
+      'Reduces internal inflammation and repairs gut barrier, helping improve skin health and overall metabolic function.',
+      'Strengthens immunity, & reduces inflammation through anti-inflammatory foods, herbs, and adaptogens, while improving overall dietary quality.',
+      'Supports better metabolism and energy production, by improving digestive efficiency'
+    ];
+  }
+  
+  if (name.includes('PCOS') || name.includes('HORMONAL')) {
+    return [
+      'Regulates menstrual cycle by supporting ovulation, estrogen-progesterone balance, and reduced androgen level.',
+      'Improves insulin sensitivity, metabolic functions, and weight management helping control PCOS symptoms.',
+      'Improves PCOS symptoms like fatigue, mood swings, and low energy, by regulating metabolic and hormonal function.',
+      'Helps improve period pain, skin health (acne & pigmentation), and inflammation with anti-inflammatory foods, adaptogens and healthy fats.',
+      'Increases insulin sensitivity to help improve brain functioning, mood stability, cravings, energy production, muscle and heart health.',
+      'Enhances gut health and hormone detoxification via the gut-liver axis, providing better hormone utilization at the cellular level.'
+    ];
+  }
+  
+  if (name.includes('DIABETES')) {
+    return [
+      'Helps regulate blood sugar levels and prevent post-meal crashes through balanced meal timing, composition and glucose utilization.',
+      'Increases insulin sensitivity to help improve brain functioning, mood stability, cravings, energy production, muscle and heart health.',
+      'Enhances metabolic function by improving lifestyle habits, micro & macro nutrient density through supplementation and lifestyle habits.',
+      'Supports gut health, which plays an important role in glucose metabolism and inflammation control'
+    ];
+  }
+  
+  return [
+    'Optimises metabolic rate for body composition targets.',
+    'Restores gut integrity and prevents systemic inflammation.',
+    'Stabilises post-meal insulin response and brain fog markers.',
+    'Supports long-term weight maintenance and energy stability.'
+  ];
+};
+
 const ReportView: React.FC<ReportViewProps> = ({ assessment, onBack, onEdit }) => {
   const [isExporting, setIsExporting] = React.useState(false);
 
@@ -227,13 +295,17 @@ const ReportView: React.FC<ReportViewProps> = ({ assessment, onBack, onEdit }) =
         <div className="v5-section">
           <div className="v5-section-title">Recommended Plan</div>
           <div className="v5-plan-banner">
-             {assessment.recommendations?.find(r => r.startsWith('PLAN:'))?.replace('PLAN: ', '') || 'Nutritional Reset Plan'}
+             {assessment.recommendations?.find(r => r.startsWith('PLAN:'))?.replace('PLAN: ', '') || 'Nutritional Reset Plan'} 
+             {assessment.recommendations?.find(r => r.startsWith('DURATION:')) && (
+                <span style={{ opacity: 0.8, fontSize: '0.9em', marginLeft: '10px', borderLeft: '1px solid rgba(255,255,255,0.3)', paddingLeft: '10px' }}>
+                  {assessment.recommendations?.find(r => r.startsWith('DURATION:'))?.replace('DURATION: ', '')}
+                </span>
+             )}
           </div>
           <div className="v5-plan-bullets">
-            <div className="v5-pb-item"><span>✓</span> Optimises metabolic rate for body composition targets.</div>
-            <div className="v5-pb-item"><span>✓</span> Restores gut integrity and prevents systemic inflammation.</div>
-            <div className="v5-pb-item"><span>✓</span> Stabilises post-meal insulin response and brain fog markers.</div>
-            <div className="v5-pb-item"><span>✓</span> Supports long-term weight maintenance and energy stability.</div>
+            {getPlanBullets(assessment.recommendations?.find(r => r.startsWith('PLAN:'))?.replace('PLAN: ', '') || '').map((bullet, idx) => (
+              <div key={idx} className="v5-pb-item"><span>✓</span> {bullet}</div>
+            ))}
           </div>
         </div>
 
@@ -383,6 +455,35 @@ const ReportView: React.FC<ReportViewProps> = ({ assessment, onBack, onEdit }) =
         .v5-gut-notes-box p { font-size: 13px; color: var(--ink); line-height: 1.6; margin: 0; font-weight: 500; }
 
         .v5-blood-box { background: var(--mist); border: 1.5px dashed var(--sage); padding: 20px; border-radius: 12px; font-size: 13px; line-height: 1.7; color: var(--ink); font-weight: 600; font-family: 'DM Mono', monospace; }
+
+        .v5-plan-banner {
+          background: var(--charcoal);
+          color: white;
+          padding: 12px 20px;
+          border-radius: 8px;
+          font-weight: 700;
+          font-size: 15px;
+          margin-bottom: 16px;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+        .v5-plan-bullets {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+        .v5-pb-item {
+          display: flex;
+          gap: 10px;
+          font-size: 13px;
+          line-height: 1.5;
+          color: var(--ink);
+          font-weight: 600;
+        }
+        .v5-pb-item span {
+          color: var(--sage);
+          font-weight: 900;
+        }
 
         .v5-footer { border-top: 1px solid var(--border); padding-top: 20px; margin-top: 40px; }
         .v5-footer p { font-size: 10px; color: var(--smoke); line-height: 1.5; text-align: justify; }
