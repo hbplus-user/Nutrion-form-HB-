@@ -49,7 +49,7 @@ const ClientList: React.FC<ClientListProps> = ({ onSelect }) => {
             >
               <div className="cc-name">{a.client_name}</div>
               <div className="cc-meta">
-                {a.age}y • {a.gender} • Score: <strong>{a.overall_score}%</strong>
+                UHID: {a.uhid || 'N/A'} • {a.age}y • {a.gender} • Score: <strong>{a.overall_score}%</strong>
               </div>
               <div className="cc-meta" style={{ marginTop: '10px', fontSize: '11px' }}>
                 Last updated: {new Date(a.created_at || '').toLocaleDateString()}

@@ -148,10 +148,14 @@ const ReportView: React.FC<ReportViewProps> = ({ assessment, onBack, onEdit }) =
           <table className="v5-table">
             <tbody>
               <tr>
-                <td><strong>Age / Sex</strong></td>
-                <td>{assessment.age}y • {assessment.gender}</td>
+                <td><strong>Patient UHID</strong></td>
+                <td>{assessment.uhid || 'P-4282'}</td>
                 <td><strong>Diet Type</strong></td>
                 <td>{assessment.diet_type}</td>
+              </tr>
+              <tr>
+                <td><strong>Age / Sex</strong></td>
+                <td>{assessment.age}y • {assessment.gender}</td>
                 <td><strong>Report Date</strong></td>
                 <td>{new Date().toLocaleDateString('en-GB')}</td>
               </tr>
