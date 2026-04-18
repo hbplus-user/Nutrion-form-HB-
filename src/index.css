@@ -1410,9 +1410,114 @@ body {
     border-color: #ffedd5;
 }
 
-.nai-tag-point-plan {
+/* Plan Editor Styles */
+.nai-plan-editor-container {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.nai-plan-bullets-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.nai-plan-bullet-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
     background: #fdf6e7;
-    border-color: #f3e8d2;
+    border: 1px solid #f3e8d2;
+    padding: 12px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.nai-plan-bullet-row:focus-within {
+    background: #fff;
+    border-color: var(--sage);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.bullet-marker {
+    color: var(--sage);
+    font-weight: 900;
+    font-size: 18px;
+    line-height: 1.2;
+}
+
+.nai-plan-bullet-textarea {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-family: inherit;
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--charcoal);
+    padding: 0;
+    resize: none;
+    overflow: hidden;
+}
+
+.nai-plan-bullet-delete {
+    background: transparent;
+    border: none;
+    color: var(--smoke);
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    opacity: 0.4;
+    padding: 0 4px;
+}
+
+.nai-plan-bullet-delete:hover {
+    color: var(--clay);
+    opacity: 1;
+}
+
+.nai-plan-add-row {
+    display: flex;
+    gap: 8px;
+    background: #f8faf9;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px dashed var(--border);
+    margin-top: 4px;
+}
+
+.nai-plan-new-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-family: inherit;
+    font-size: 13.5px;
+    color: var(--ink);
+    padding: 2px 0;
+    resize: none;
+    overflow: hidden;
+}
+
+.nai-plan-add-btn {
+    background: var(--sage);
+    color: white;
+    border: none;
+    padding: 6px 16px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.nai-plan-add-btn:hover {
+    background: var(--sage-light);
 }
 
 .nai-tag-point span {

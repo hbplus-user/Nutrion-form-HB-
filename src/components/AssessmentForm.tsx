@@ -824,37 +824,69 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onSuccess, initialData 
             {/* Plan Points Editable List */}
             <div className="nai-field" style={{ marginTop: 16 }}>
               <label>PLAN DETAILS / POINTS (EDITABLE)</label>
-              <div className="nai-tag-input-wrap">
-                <div className="nai-tag-list-bulleted">
-                  {planItemTags.map(tag => (
-                    <div key={tag} className="nai-tag-point nai-tag-point-plan">
-                      <span>• {tag}</span>
-                      <button type="button" className="nai-tag-remove" onClick={() => removeTag(planItemTags, setPlanItemTags, tag)}>×</button>
+              <div className="nai-plan-editor-container">
+                <div className="nai-plan-bullets-list">
+                  {planItemTags.map((tag, idx) => (
+                    <div key={idx} className="nai-plan-bullet-row">
+                      <div className="bullet-marker">•</div>
+                      <textarea
+                        className="nai-plan-bullet-textarea"
+                        value={tag}
+                        onChange={(e) => {
+                          const newList = [...planItemTags];
+                          newList[idx] = e.target.value;
+                          setPlanItemTags(newList);
+                        }}
+                        placeholder="Type point content here..."
+                        onFocus={(e) => {
+                           e.target.style.height = 'auto';
+                           e.target.style.height = e.target.scrollHeight + 'px';
+                        }}
+                        rows={1}
+                        style={{ height: 'auto' }}
+                      />
+                      <button 
+                        type="button" 
+                        className="nai-plan-bullet-delete" 
+                        onClick={() => {
+                          const newList = [...planItemTags];
+                          newList.splice(idx, 1);
+                          setPlanItemTags(newList);
+                        }}
+                        title="Remove this point"
+                      >×</button>
                     </div>
                   ))}
-                  {planItemTags.length === 0 && <div className="text-[11px] text-smoke opacity-50 pl-1">No plan points added. Select a plan above to populate.</div>}
+                  {planItemTags.length === 0 && <div className="text-[11px] text-smoke opacity-50 pl-1 py-4 text-center">No plan points added. Select a plan above to populate.</div>}
                 </div>
-                <div className="nai-tag-row" style={{ marginTop: 12 }}>
+                
+                <div className="nai-plan-add-row">
                   <textarea
-                    className="nai-tag-field"
-                    style={{ minHeight: '60px', paddingTop: '10px' }}
+                    className="nai-plan-new-input"
                     value={planItemInput}
                     onChange={e => setPlanItemInput(e.target.value)}
                     onKeyDown={e => {
                       if (e.key === 'Enter' && !e.shiftKey) {
                         e.preventDefault();
-                        addTag(planItemTags, setPlanItemTags, planItemInput);
-                        setPlanItemInput('');
+                        if (planItemInput.trim()) {
+                           setPlanItemTags([...planItemTags, planItemInput.trim()]);
+                           setPlanItemInput('');
+                        }
                       }
                     }}
-                    placeholder="Add an additional plan point and press Enter…"
+                    placeholder="Add a new custom plan point..."
+                    rows={1}
                   />
                   <button
                     type="button"
-                    className="nai-tag-add-btn"
-                    style={{ height: '60px', background: 'var(--sage)' }}
-                    onClick={() => { addTag(planItemTags, setPlanItemTags, planItemInput); setPlanItemInput(''); }}
-                  >+</button>
+                    className="nai-plan-add-btn"
+                    onClick={() => { 
+                      if (planItemInput.trim()) {
+                        setPlanItemTags([...planItemTags, planItemInput.trim()]);
+                        setPlanItemInput(''); 
+                      }
+                    }}
+                  >ADD</button>
                 </div>
               </div>
             </div>
