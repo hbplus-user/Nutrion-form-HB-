@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { supabase } from '../lib/supabase';
 import type { Assessment } from '../types';
+import { getPlanBullets } from '../lib/planUtils';
 
 
 interface AssessmentFormProps {
@@ -146,6 +147,11 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onSuccess, initialData 
   const [planDuration, setPlanDuration] = useState('');
   const [bloodTests, setBloodTests] = useState(initialData?.recommendations?.find(r => r.startsWith('BLOOD TESTS:'))?.replace('BLOOD TESTS: ', '') || '');
 
+  const [planItemTags, setPlanItemTags] = useState<string[]>(
+    initialData?.recommendations?.filter(r => r.startsWith('ITEM:')).map(i => i.replace('ITEM: ', '')) || []
+  );
+  const [planItemInput, setPlanItemInput] = useState('');
+
   const addTag = (list: string[], setList: (v: string[]) => void, value: string) => {
     const trimmed = value.trim();
     if (trimmed && !list.includes(trimmed)) setList([...list, trimmed]);
@@ -170,6 +176,7 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onSuccess, initialData 
     setLunch(''); setEveningSnack(''); setDinner(''); setPostDinner(''); setTeaCoffee('');
     setFruitIntake(''); setFoodAllergies(''); setSmoking(''); setAlcoholIntake(''); setOutsideMeals('');
     setDiagnosisTags([]); setTreatmentGoalTags([]); setPlanName(''); setPlanDuration('12 Weeks'); setBloodTests('');
+    setPlanItemTags([]); setPlanItemInput('');
   };
 
 
@@ -214,6 +221,7 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onSuccess, initialData 
         diagnosis: `HB+ CLINICAL FINDINGS:\n${diagnosisTags.join('\n')}\n\nPRESENT MEDICAL CONCERNS:\n${medicalConcerns}`,
         recommendations: [
           ...treatmentGoalTags.map(g => `GOAL: ${g}`),
+          ...planItemTags.map(i => `ITEM: ${i}`),
           `PLAN: ${planName}`,
           `DURATION: ${planDuration}`,
           `BLOOD TESTS: ${bloodTests}`
@@ -793,13 +801,61 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onSuccess, initialData 
                 <input value={planName} onChange={e => setPlanName(e.target.value)} placeholder="e.g. FAT LOSS AND METABOLIC RESET PLAN — 12 WEEK" />
                 <div className="nai-chip-suggestions">
                    {['FAT LOSS & METABOLIC RESET', 'THYROID REGULATION', 'GUT MICROBIOME', 'PCOS MANAGEMENT', 'DIABETES CARE'].map(p => (
-                      <button key={p} type="button" className="nai-chip-mini" onClick={() => setPlanName(p)}>{p} Plan</button>
+                      <button 
+                        key={p} 
+                        type="button" 
+                        className="nai-chip-mini" 
+                        onClick={() => {
+                          setPlanName(p);
+                          setPlanItemTags(getPlanBullets(p));
+                        }}
+                      >
+                        {p} Plan
+                      </button>
                    ))}
                 </div>
               </div>
               <div className="nai-field">
                 <label>PLAN DURATION</label>
                 <input value={planDuration} onChange={e => setPlanDuration(e.target.value)} placeholder="12 Weeks" />
+              </div>
+            </div>
+
+            {/* Plan Points Editable List */}
+            <div className="nai-field" style={{ marginTop: 16 }}>
+              <label>PLAN DETAILS / POINTS (EDITABLE)</label>
+              <div className="nai-tag-input-wrap">
+                <div className="nai-tag-list-bulleted">
+                  {planItemTags.map(tag => (
+                    <div key={tag} className="nai-tag-point nai-tag-point-plan">
+                      <span>• {tag}</span>
+                      <button type="button" className="nai-tag-remove" onClick={() => removeTag(planItemTags, setPlanItemTags, tag)}>×</button>
+                    </div>
+                  ))}
+                  {planItemTags.length === 0 && <div className="text-[11px] text-smoke opacity-50 pl-1">No plan points added. Select a plan above to populate.</div>}
+                </div>
+                <div className="nai-tag-row" style={{ marginTop: 12 }}>
+                  <textarea
+                    className="nai-tag-field"
+                    style={{ minHeight: '60px', paddingTop: '10px' }}
+                    value={planItemInput}
+                    onChange={e => setPlanItemInput(e.target.value)}
+                    onKeyDown={e => {
+                      if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        addTag(planItemTags, setPlanItemTags, planItemInput);
+                        setPlanItemInput('');
+                      }
+                    }}
+                    placeholder="Add an additional plan point and press Enter…"
+                  />
+                  <button
+                    type="button"
+                    className="nai-tag-add-btn"
+                    style={{ height: '60px', background: 'var(--sage)' }}
+                    onClick={() => { addTag(planItemTags, setPlanItemTags, planItemInput); setPlanItemInput(''); }}
+                  >+</button>
+                </div>
               </div>
             </div>
 

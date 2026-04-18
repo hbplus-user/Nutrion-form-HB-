@@ -1393,19 +1393,26 @@ body {
 .nai-tag-point {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     background: #f4f7f5;
-    padding: 8px 12px;
+    padding: 10px 12px;
     border-radius: 8px;
     font-size: 13.5px;
+    line-height: 1.5;
     color: var(--charcoal);
     border: 1px solid var(--border);
     animation: slideRight 0.2s ease-out;
+    gap: 12px;
 }
 
 .nai-tag-point-goal {
     background: #fff7ed;
     border-color: #ffedd5;
+}
+
+.nai-tag-point-plan {
+    background: #fdf6e7;
+    border-color: #f3e8d2;
 }
 
 .nai-tag-point span {
