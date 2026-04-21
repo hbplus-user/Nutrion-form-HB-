@@ -9,7 +9,7 @@ interface AssessmentFormProps {
   initialData?: Assessment;
 }
 
-const LIFESTYLE_OPTIONS = ['Sedentary', 'WFH', 'Hybrid', 'Office', 'On the Move'];
+
 
 function calcBMI(weightKg: number, heightFtIn: string): number {
   const parts = heightFtIn.split('.');
@@ -570,14 +570,14 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onSuccess, initialData 
             <span>Clinical Impression & Plan</span>
           </div>
 
-          <div className="nai-body">
+            <div className="nai-body">
             {/* Diagnosis tag input */}
             <div className="nai-field">
               <label>HB+ DIAGNOSIS</label>
               <div className="nai-tag-input-wrap">
-                <div className="nai-tag-list-bulleted">
-                  {diagnosisTags.map(tag => (
-                    <div key={tag} className="nai-tag-point">
+                <div className="v5-diag-grid-detailed">
+                  {diagnosisTags.map((tag: string, i: number) => (
+                    <div key={i} className="v5-diag-item-large">
                       <span>• {tag}</span>
                       <button type="button" className="nai-tag-remove" onClick={() => removeTag(diagnosisTags, setDiagnosisTags, tag)}>×</button>
                     </div>

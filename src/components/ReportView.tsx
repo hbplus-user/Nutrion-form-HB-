@@ -303,7 +303,7 @@ const ReportView: React.FC<ReportViewProps> = ({ assessment, onBack, onEdit }) =
               <div style={{ marginBottom: '24px' }}>
                 <div style={{ fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', color: 'var(--smoke)', marginBottom: '10px' }}>Clinical Findings</div>
                 <div className="v5-diag-grid-detailed">
-                  {findings.map((f, i) => (
+                  {findings.map((f: string, i: number) => (
                     <div key={i} className="v5-diag-item-large">
                       <div className="v5-diag-bullet">✦</div>
                       <div className="v5-diag-content">
