@@ -288,25 +288,27 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onSuccess, initialData 
             <div className="nai-grid-2" style={{ marginBottom: 20, background: 'rgba(116, 116, 64, 0.05)', padding: '15px', borderRadius: '12px', border: '1px solid rgba(116, 116, 64, 0.1)' }}>
               <div className="nai-field">
                 <label style={{ color: 'var(--sage)', fontWeight: 'bold' }}>NUTRITION CONSULTANT NAME</label>
-                <select value={consultantName} onChange={e => setConsultantName(e.target.value)}>
+                <select 
+                  value={consultantName} 
+                  onChange={e => {
+                    const val = e.target.value;
+                    setConsultantName(val);
+                    if (val === 'Pooja Agrawalla') setSpecialization('Clinical Nutritionist');
+                    if (val === 'Pragya Dhanjika') setSpecialization('Functional Nutritionist');
+                  }}
+                >
                   <option value="">Select Consultant</option>
-                  <option>Dt. Smitha</option>
-                  <option>Dt. Priya</option>
-                  <option>Dt. Rahul</option>
-                  <option>Dt. Anjali</option>
+                  <option>Pooja Agrawalla</option>
+                  <option>Pragya Dhanjika</option>
                 </select>
               </div>
               <div className="nai-field">
                 <label style={{ color: 'var(--sage)', fontWeight: 'bold' }}>SPECIALIZATION</label>
-                <select value={specialization} onChange={e => setSpecialization(e.target.value)}>
-                  <option>Clinical Dietitian</option>
-                  <option>Sports Nutritionist</option>
-                  <option>Pediatric Nutritionist</option>
-                  <option>Renal Nutritionist</option>
-                  <option>Weight Management Specialist</option>
-                  <option>Lifestyle Coach</option>
-                  <option>Holistic Nutritionist</option>
-                </select>
+                <input 
+                  value={specialization} 
+                  onChange={e => setSpecialization(e.target.value)} 
+                  placeholder="Clinical Nutritionist"
+                />
               </div>
             </div>
             <div className="nai-grid-4">
@@ -600,7 +602,7 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onSuccess, initialData 
             <span>Clinical Impression & Plan</span>
           </div>
 
-            <div className="nai-body">
+          <div className="nai-body">
             {/* Diagnosis tag input */}
             <div className="nai-field">
               <label>HB+ DIAGNOSIS</label>
