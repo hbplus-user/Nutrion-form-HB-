@@ -126,9 +126,9 @@ const ReportView: React.FC<ReportViewProps> = ({ assessment, onBack, onEdit }) =
             </div>
           </div>
           <div className="header-client-v5">
-            <div className="name-v5">{assessment.client_name}</div>
+            <div className="name-v5">{assessment.report_snapshot?.consultantName || 'Nutrition Consultant'}</div>
             <div className="date-v5">
-              UHID: {assessment.uhid || 'P-0000'} • {assessment.phone || 'Contact Not Provided'}
+              {assessment.report_snapshot?.specialization || 'Clinical Nutritionist'}
             </div>
           </div>
         </div>
@@ -165,10 +165,16 @@ const ReportView: React.FC<ReportViewProps> = ({ assessment, onBack, onEdit }) =
           <table className="v5-table">
             <tbody>
               <tr>
-                <td><strong>Patient ID</strong></td>
-                <td>{assessment.uhid || 'P-' + Math.floor(Math.random()*9000 + 1000)}</td>
+                <td><strong>Client Name</strong></td>
+                <td>{assessment.client_name}</td>
                 <td><strong>Report Date</strong></td>
                 <td>{new Date().toLocaleDateString('en-GB')}</td>
+              </tr>
+              <tr>
+                <td><strong>UHID / Patient ID</strong></td>
+                <td>{assessment.uhid || 'P-' + Math.floor(Math.random()*9000 + 1000)}</td>
+                <td><strong>Phone Number</strong></td>
+                <td>{assessment.phone || '—'}</td>
               </tr>
               <tr>
                 <td><strong>Age / Gender</strong></td>
@@ -575,7 +581,7 @@ const ReportView: React.FC<ReportViewProps> = ({ assessment, onBack, onEdit }) =
         }
         .header-client-v5 { text-align: right; }
         .name-v5 { font-family: 'DM Serif Display', serif; font-size: 24px; color: var(--sage); }
-        .date-v5 { font-size: 11px; color: var(--smoke); font-weight: 700; text-transform: uppercase; }
+        .date-v5 { font-size: 11px; color: #475569; font-weight: 700; text-transform: uppercase; }
 
         .metrics-grid-v5 {
            display: grid;
@@ -598,7 +604,7 @@ const ReportView: React.FC<ReportViewProps> = ({ assessment, onBack, onEdit }) =
         .metric-box-v5:last-child { border-right: none; }
         .v5-val { font-size: 20px; font-weight: 900; color: #854d0e; line-height: 1; }
         .v5-val span { font-size: 11px; margin-left: 2px; color: #a16207; opacity: 0.8; }
-        .v5-label { font-size: 10px; font-weight: 800; text-transform: uppercase; color: #a16207; margin-top: 8px; letter-spacing: 0.5px; }
+        .v5-label { font-size: 10px; font-weight: 800; text-transform: uppercase; color: #854d0e; margin-top: 8px; letter-spacing: 0.5px; }
 
         .v5-label-v2 { font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--sage); margin-top: 6px; letter-spacing: 0.5px; }
 
@@ -627,7 +633,7 @@ const ReportView: React.FC<ReportViewProps> = ({ assessment, onBack, onEdit }) =
           font-weight: 800; 
           font-size: 10px; 
           text-transform: uppercase; 
-          color: var(--smoke); 
+          color: #334155; 
           letter-spacing: 0.5px;
           border-left: 4px solid #cbd5e1;
         }

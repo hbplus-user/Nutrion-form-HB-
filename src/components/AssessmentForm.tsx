@@ -70,6 +70,10 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onSuccess, initialData 
   const [lifestyle, setLifestyle] = useState(initialData?.lifestyle || snap.lifestyle || '');
   const [stepCount, setStepCount] = useState(snap.stepCount || '');
 
+  // Consultant Info
+  const [consultantName, setConsultantName] = useState(snap.consultantName || '');
+  const [specialization, setSpecialization] = useState(snap.specialization || 'Clinical Dietitian');
+
   // Computed
   const bmi = calcBMI(parseFloat(weight) || 0, height);
   const bmr = calcBMR(parseFloat(weight) || 0, height, parseFloat(age) || 0, sex);
@@ -173,6 +177,7 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onSuccess, initialData 
     setFruitIntake(''); setFoodAllergies(''); setSmoking(''); setAlcoholIntake(''); setOutsideMeals('');
     setDiagnosisTags([]); setTreatmentGoalTags([]); setPlanName(''); setPlanDuration('12 Weeks'); setBloodTests('');
     setPlanItemTags([]); setPlanItemInput('');
+    setConsultantName(''); setSpecialization('Clinical Dietitian');
   };
 
 
@@ -236,7 +241,8 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onSuccess, initialData 
           sleepQuality, sleepDuration, stressLevel, energyLevels,
           wakeUpTime, preBreakfast, breakfast, midMorning, lunch, eveningSnack, dinner, postDinner,
           teaCoffee, fruitIntake, foodAllergies, smoking, alcoholIntake, outsideMeals,
-          diagnosisTags, treatmentGoalTags, planName, planDuration, bloodTests, planItemTags
+          diagnosisTags, treatmentGoalTags, planName, planDuration, bloodTests, planItemTags,
+          consultantName, specialization
         }
       };
 
@@ -279,6 +285,30 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onSuccess, initialData 
             <span>Personal Details</span>
           </div>
           <div className="nai-body">
+            <div className="nai-grid-2" style={{ marginBottom: 20, background: 'rgba(116, 116, 64, 0.05)', padding: '15px', borderRadius: '12px', border: '1px solid rgba(116, 116, 64, 0.1)' }}>
+              <div className="nai-field">
+                <label style={{ color: 'var(--sage)', fontWeight: 'bold' }}>NUTRITION CONSULTANT NAME</label>
+                <select value={consultantName} onChange={e => setConsultantName(e.target.value)}>
+                  <option value="">Select Consultant</option>
+                  <option>Dt. Smitha</option>
+                  <option>Dt. Priya</option>
+                  <option>Dt. Rahul</option>
+                  <option>Dt. Anjali</option>
+                </select>
+              </div>
+              <div className="nai-field">
+                <label style={{ color: 'var(--sage)', fontWeight: 'bold' }}>SPECIALIZATION</label>
+                <select value={specialization} onChange={e => setSpecialization(e.target.value)}>
+                  <option>Clinical Dietitian</option>
+                  <option>Sports Nutritionist</option>
+                  <option>Pediatric Nutritionist</option>
+                  <option>Renal Nutritionist</option>
+                  <option>Weight Management Specialist</option>
+                  <option>Lifestyle Coach</option>
+                  <option>Holistic Nutritionist</option>
+                </select>
+              </div>
+            </div>
             <div className="nai-grid-4">
               <div className="nai-field">
                 <label>CLIENT FULL NAME</label>
