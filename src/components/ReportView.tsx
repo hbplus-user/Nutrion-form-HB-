@@ -220,12 +220,7 @@ const ReportView: React.FC<ReportViewProps> = ({ assessment, onBack, onEdit }) =
                     <td>{assessment.past_surgeries || 'None'}</td>
                   </tr>
                 )}
-                {assessment.skin_hair_nail && (
-                  <tr>
-                    <td><strong>Skin / Hair / Nails</strong></td>
-                    <td colSpan={3}>{assessment.skin_hair_nail}</td>
-                  </tr>
-                )}
+
                 {assessment.report_snapshot?.menstrualHealth && (
                   <tr>
                     <td><strong>Menstrual Health</strong></td>
