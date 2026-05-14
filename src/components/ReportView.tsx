@@ -243,10 +243,10 @@ const ReportView: React.FC<ReportViewProps> = ({ assessment, onBack, onEdit }) =
             <div className="v5-section-title">Biochemical Analysis (Blood Markers)</div>
             <table className="v5-table">
               <tbody>
-                {assessment.fasting_sugar && (
+                {(assessment.fasting_sugar || assessment.report_snapshot?.hba1c) && (
                   <tr>
                     <td><strong>FBS</strong></td>
-                    <td>{assessment.fasting_sugar} mg/dL</td>
+                    <td>{assessment.fasting_sugar ? `${assessment.fasting_sugar} mg/dL` : '—'}</td>
                     <td><strong>HbA1c</strong></td>
                     <td>{assessment.report_snapshot?.hba1c || '—'}</td>
                   </tr>
