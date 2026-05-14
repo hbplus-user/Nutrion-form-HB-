@@ -220,12 +220,16 @@ const ReportView: React.FC<ReportViewProps> = ({ assessment, onBack, onEdit }) =
                     <td>{assessment.past_surgeries || 'None'}</td>
                   </tr>
                 )}
-                {(assessment.skin_hair_nail || assessment.report_snapshot?.menstrualHealth) && (
+                {assessment.skin_hair_nail && (
                   <tr>
                     <td><strong>Skin / Hair / Nails</strong></td>
-                    <td>{assessment.skin_hair_nail || '—'}</td>
+                    <td colSpan={3}>{assessment.skin_hair_nail}</td>
+                  </tr>
+                )}
+                {assessment.report_snapshot?.menstrualHealth && (
+                  <tr>
                     <td><strong>Menstrual Health</strong></td>
-                    <td>{assessment.report_snapshot?.menstrualHealth || '—'}</td>
+                    <td colSpan={3}>{assessment.report_snapshot.menstrualHealth}</td>
                   </tr>
                 )}
               </tbody>
@@ -234,7 +238,7 @@ const ReportView: React.FC<ReportViewProps> = ({ assessment, onBack, onEdit }) =
         )}
 
         {/* 3. Biochemical Analysis */}
-        {(assessment.fasting_sugar || assessment.report_snapshot?.hba1c || assessment.report_snapshot?.tsh || assessment.report_snapshot?.haemoglobin || assessment.report_snapshot?.vitaminB12) && (
+        {assessment.report_snapshot?.bloodReportsAvailable !== 'No' && (assessment.fasting_sugar || assessment.report_snapshot?.hba1c || assessment.report_snapshot?.tsh || assessment.report_snapshot?.haemoglobin || assessment.report_snapshot?.vitaminB12) && (
           <div className="v5-section">
             <div className="v5-section-title">Biochemical Analysis (Blood Markers)</div>
             <table className="v5-table">
