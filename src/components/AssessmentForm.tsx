@@ -653,13 +653,14 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onSuccess, initialData 
                     ref={diagnosisInputRef}
                     className="nai-tag-field"
                     style={{ minHeight: '80px', paddingTop: '10px' }}
-                    value={diagnosisInput}
-                    onChange={e => setDiagnosisInput(e.target.value)}
                     onKeyDown={e => {
                       if (e.key === 'Enter' && !e.shiftKey) {
                         e.preventDefault();
-                        const val = (diagnosisInputRef.current?.value ?? diagnosisInput).trim();
-                        if (val) { setDiagnosisTags(prev => prev.includes(val) ? prev : [...prev, val]); setDiagnosisInput(''); }
+                        const val = diagnosisInputRef.current?.value.trim() ?? '';
+                        if (val) {
+                          setDiagnosisTags(prev => prev.includes(val) ? prev : [...prev, val]);
+                          if (diagnosisInputRef.current) diagnosisInputRef.current.value = '';
+                        }
                       }
                     }}
                     placeholder="Type finding and press Enter or + to list as point…"
@@ -670,8 +671,11 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onSuccess, initialData 
                     style={{ height: '80px' }}
                     onMouseDown={e => {
                       e.preventDefault();
-                      const val = (diagnosisInputRef.current?.value ?? '').trim();
-                      if (val) { setDiagnosisTags(prev => prev.includes(val) ? prev : [...prev, val]); setDiagnosisInput(''); if (diagnosisInputRef.current) diagnosisInputRef.current.value = ''; }
+                      const val = diagnosisInputRef.current?.value.trim() ?? '';
+                      if (val) {
+                        setDiagnosisTags(prev => prev.includes(val) ? prev : [...prev, val]);
+                        if (diagnosisInputRef.current) diagnosisInputRef.current.value = '';
+                      }
                     }}
                   >+</button>
                 </div>
@@ -719,24 +723,28 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onSuccess, initialData 
                   <input
                     ref={goalInputRef}
                     className="nai-tag-field"
-                    value={treatmentGoalInput}
-                    onChange={e => setTreatmentGoalInput(e.target.value)}
                     onKeyDown={e => {
                       if (e.key === 'Enter') {
                         e.preventDefault();
-                        addTag(setTreatmentGoalTags, treatmentGoalInput);
-                        setTreatmentGoalInput('');
+                        const val = goalInputRef.current?.value.trim() ?? '';
+                        if (val) {
+                          setTreatmentGoalTags(prev => prev.includes(val) ? prev : [...prev, val]);
+                          if (goalInputRef.current) goalInputRef.current.value = '';
+                        }
                       }
                     }}
-                    placeholder="Type goal and press Enter or + …"
+                    placeholder="Type goal and press Enter or + "
                   />
                   <button
                     type="button"
                     className="nai-tag-add-btn nai-tag-add-btn-goal"
                     onMouseDown={e => {
                       e.preventDefault();
-                      const val = (goalInputRef.current?.value ?? '').trim();
-                      if (val) { setTreatmentGoalTags(prev => prev.includes(val) ? prev : [...prev, val]); setTreatmentGoalInput(''); if (goalInputRef.current) goalInputRef.current.value = ''; }
+                      const val = goalInputRef.current?.value.trim() ?? '';
+                      if (val) {
+                        setTreatmentGoalTags(prev => prev.includes(val) ? prev : [...prev, val]);
+                        if (goalInputRef.current) goalInputRef.current.value = '';
+                      }
                     }}
                   >+</button>
                 </div>
