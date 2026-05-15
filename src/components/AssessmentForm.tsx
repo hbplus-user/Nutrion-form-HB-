@@ -138,13 +138,13 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onSuccess, initialData 
       ? initialData.diagnosis.split('HB+ CLINICAL FINDINGS:\n')[1]?.split('\n\n')[0]?.split('\n') || []
       : [])
   );
-  const [diagnosisInput, setDiagnosisInput] = useState('');
+
   const diagnosisInputRef = useRef<HTMLTextAreaElement>(null);
   const goalInputRef = useRef<HTMLInputElement>(null);
   const [treatmentGoalTags, setTreatmentGoalTags] = useState<string[]>(
     snap.treatmentGoalTags || (initialData?.recommendations?.filter(r => r.startsWith('GOAL:')).map(g => g.replace('GOAL: ', '')) || [])
   );
-  const [treatmentGoalInput, setTreatmentGoalInput] = useState('');
+
   const [planName, setPlanName] = useState(snap.planName || initialData?.recommendations?.find(r => r.startsWith('PLAN:'))?.replace('PLAN: ', '') || '');
   const [planDuration, setPlanDuration] = useState(snap.planDuration || '');
   const [bloodTests, setBloodTests] = useState(snap.bloodTests || initialData?.recommendations?.find(r => r.startsWith('BLOOD TESTS:'))?.replace('BLOOD TESTS: ', '') || '');
@@ -159,11 +159,6 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onSuccess, initialData 
   const [editGoalIdx, setEditGoalIdx] = useState<number | null>(null);
   const [editGoalVal, setEditGoalVal] = useState('');
 
-  const addTag = (setList: React.Dispatch<React.SetStateAction<string[]>>, value: string) => {
-    const trimmed = value.trim();
-    if (!trimmed) return;
-    setList(prev => [...prev, trimmed]);
-  };
 
   const removeTag = (setList: React.Dispatch<React.SetStateAction<string[]>>, tag: string) => {
     setList(prev => prev.filter(t => t !== tag));
