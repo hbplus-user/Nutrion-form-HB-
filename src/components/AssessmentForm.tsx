@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { supabase } from '../lib/supabase';
 import type { Assessment } from '../types';
 import { getPlanBullets } from '../lib/planUtils';
@@ -139,6 +139,8 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onSuccess, initialData 
       : [])
   );
   const [diagnosisInput, setDiagnosisInput] = useState('');
+  const diagnosisInputRef = useRef<HTMLTextAreaElement>(null);
+  const goalInputRef = useRef<HTMLInputElement>(null);
   const [treatmentGoalTags, setTreatmentGoalTags] = useState<string[]>(
     snap.treatmentGoalTags || (initialData?.recommendations?.filter(r => r.startsWith('GOAL:')).map(g => g.replace('GOAL: ', '')) || [])
   );
@@ -152,13 +154,19 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onSuccess, initialData 
   );
   const [planItemInput, setPlanItemInput] = useState('');
 
-  const addTag = (list: string[], setList: (v: string[]) => void, value: string) => {
+  const [editDiagIdx, setEditDiagIdx] = useState<number | null>(null);
+  const [editDiagVal, setEditDiagVal] = useState('');
+  const [editGoalIdx, setEditGoalIdx] = useState<number | null>(null);
+  const [editGoalVal, setEditGoalVal] = useState('');
+
+  const addTag = (setList: React.Dispatch<React.SetStateAction<string[]>>, value: string) => {
     const trimmed = value.trim();
-    if (trimmed && !list.includes(trimmed)) setList([...list, trimmed]);
+    if (!trimmed) return;
+    setList(prev => prev.includes(trimmed) ? prev : [...prev, trimmed]);
   };
 
-  const removeTag = (list: string[], setList: (v: string[]) => void, tag: string) => {
-    setList(list.filter(t => t !== tag));
+  const removeTag = (setList: React.Dispatch<React.SetStateAction<string[]>>, tag: string) => {
+    setList(prev => prev.filter(t => t !== tag));
   };
 
   const clearForm = () => {
@@ -610,14 +618,39 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onSuccess, initialData 
                 <div className="v5-diag-grid-detailed">
                   {diagnosisTags.map((tag: string, i: number) => (
                     <div key={i} className="v5-diag-item-large">
-                      <span>• {tag}</span>
-                      <button type="button" className="nai-tag-remove" onClick={() => removeTag(diagnosisTags, setDiagnosisTags, tag)}>×</button>
+                      {editDiagIdx === i ? (
+                        <textarea
+                          autoFocus
+                          className="nai-tag-field"
+                          style={{ flex: 1, minHeight: '60px', marginRight: 6 }}
+                          value={editDiagVal}
+                          onChange={e => setEditDiagVal(e.target.value)}
+                          onBlur={() => {
+                            const t = editDiagVal.trim();
+                            if (t) setDiagnosisTags(prev => prev.map((v, idx) => idx === i ? t : v));
+                            setEditDiagIdx(null);
+                          }}
+                          onKeyDown={e => {
+                            if (e.key === 'Enter' && !e.shiftKey) {
+                              e.preventDefault();
+                              const t = editDiagVal.trim();
+                              if (t) setDiagnosisTags(prev => prev.map((v, idx) => idx === i ? t : v));
+                              setEditDiagIdx(null);
+                            }
+                            if (e.key === 'Escape') setEditDiagIdx(null);
+                          }}
+                        />
+                      ) : (
+                        <span style={{ cursor: 'text', flex: 1 }} title="Click to edit" onClick={() => { setEditDiagIdx(i); setEditDiagVal(tag); }}>• {tag}</span>
+                      )}
+                      <button type="button" className="nai-tag-remove" onClick={() => removeTag(setDiagnosisTags, tag)}>×</button>
                     </div>
                   ))}
                   {diagnosisTags.length === 0 && <div className="text-[11px] text-smoke opacity-50 pl-1">No findings added yet. Press [+] to list points.</div>}
                 </div>
                 <div className="nai-tag-row" style={{ marginTop: 12 }}>
                   <textarea
+                    ref={diagnosisInputRef}
                     className="nai-tag-field"
                     style={{ minHeight: '80px', paddingTop: '10px' }}
                     value={diagnosisInput}
@@ -625,8 +658,8 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onSuccess, initialData 
                     onKeyDown={e => {
                       if (e.key === 'Enter' && !e.shiftKey) {
                         e.preventDefault();
-                        addTag(diagnosisTags, setDiagnosisTags, diagnosisInput);
-                        setDiagnosisInput('');
+                        const val = (diagnosisInputRef.current?.value ?? diagnosisInput).trim();
+                        if (val) { setDiagnosisTags(prev => prev.includes(val) ? prev : [...prev, val]); setDiagnosisInput(''); }
                       }
                     }}
                     placeholder="Type finding and press Enter or + to list as point…"
@@ -635,7 +668,11 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onSuccess, initialData 
                     type="button"
                     className="nai-tag-add-btn"
                     style={{ height: '80px' }}
-                    onClick={() => { addTag(diagnosisTags, setDiagnosisTags, diagnosisInput); setDiagnosisInput(''); }}
+                    onMouseDown={e => {
+                      e.preventDefault();
+                      const val = (diagnosisInputRef.current?.value ?? '').trim();
+                      if (val) { setDiagnosisTags(prev => prev.includes(val) ? prev : [...prev, val]); setDiagnosisInput(''); if (diagnosisInputRef.current) diagnosisInputRef.current.value = ''; }
+                    }}
                   >+</button>
                 </div>
               </div>
@@ -646,23 +683,48 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onSuccess, initialData 
               <label>TREATMENT GOALS</label>
               <div className="nai-tag-input-wrap">
                 <div className="nai-tag-list-bulleted">
-                  {treatmentGoalTags.map(tag => (
-                    <div key={tag} className="nai-tag-point nai-tag-point-goal">
-                      <span>• {tag}</span>
-                      <button type="button" className="nai-tag-remove" onClick={() => removeTag(treatmentGoalTags, setTreatmentGoalTags, tag)}>×</button>
+                  {treatmentGoalTags.map((tag, i) => (
+                    <div key={i} className="nai-tag-point nai-tag-point-goal">
+                      {editGoalIdx === i ? (
+                        <input
+                          autoFocus
+                          className="nai-tag-field"
+                          style={{ flex: 1, marginRight: 6 }}
+                          value={editGoalVal}
+                          onChange={e => setEditGoalVal(e.target.value)}
+                          onBlur={() => {
+                            const t = editGoalVal.trim();
+                            if (t) setTreatmentGoalTags(prev => prev.map((v, idx) => idx === i ? t : v));
+                            setEditGoalIdx(null);
+                          }}
+                          onKeyDown={e => {
+                            if (e.key === 'Enter') {
+                              e.preventDefault();
+                              const t = editGoalVal.trim();
+                              if (t) setTreatmentGoalTags(prev => prev.map((v, idx) => idx === i ? t : v));
+                              setEditGoalIdx(null);
+                            }
+                            if (e.key === 'Escape') setEditGoalIdx(null);
+                          }}
+                        />
+                      ) : (
+                        <span style={{ cursor: 'text', flex: 1 }} title="Click to edit" onClick={() => { setEditGoalIdx(i); setEditGoalVal(tag); }}>• {tag}</span>
+                      )}
+                      <button type="button" className="nai-tag-remove" onClick={() => removeTag(setTreatmentGoalTags, tag)}>×</button>
                     </div>
                   ))}
                   {treatmentGoalTags.length === 0 && <div className="text-[11px] text-smoke opacity-50 pl-1">No goals added yet. Press [+] to list points.</div>}
                 </div>
                 <div className="nai-tag-row">
                   <input
+                    ref={goalInputRef}
                     className="nai-tag-field"
                     value={treatmentGoalInput}
                     onChange={e => setTreatmentGoalInput(e.target.value)}
                     onKeyDown={e => {
                       if (e.key === 'Enter') {
                         e.preventDefault();
-                        addTag(treatmentGoalTags, setTreatmentGoalTags, treatmentGoalInput);
+                        addTag(setTreatmentGoalTags, treatmentGoalInput);
                         setTreatmentGoalInput('');
                       }
                     }}
@@ -671,7 +733,11 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onSuccess, initialData 
                   <button
                     type="button"
                     className="nai-tag-add-btn nai-tag-add-btn-goal"
-                    onClick={() => { addTag(treatmentGoalTags, setTreatmentGoalTags, treatmentGoalInput); setTreatmentGoalInput(''); }}
+                    onMouseDown={e => {
+                      e.preventDefault();
+                      const val = (goalInputRef.current?.value ?? '').trim();
+                      if (val) { setTreatmentGoalTags(prev => prev.includes(val) ? prev : [...prev, val]); setTreatmentGoalInput(''); if (goalInputRef.current) goalInputRef.current.value = ''; }
+                    }}
                   >+</button>
                 </div>
               </div>
@@ -751,7 +817,7 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onSuccess, initialData 
                       if (e.key === 'Enter' && !e.shiftKey) {
                         e.preventDefault();
                         if (planItemInput.trim()) {
-                          setPlanItemTags([...planItemTags, planItemInput.trim()]);
+                          setPlanItemTags(prev => [...prev, planItemInput.trim()]);
                           setPlanItemInput('');
                         }
                       }
@@ -764,7 +830,7 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onSuccess, initialData 
                     className="nai-plan-add-btn"
                     onClick={() => {
                       if (planItemInput.trim()) {
-                        setPlanItemTags([...planItemTags, planItemInput.trim()]);
+                        setPlanItemTags(prev => [...prev, planItemInput.trim()]);
                         setPlanItemInput('');
                       }
                     }}

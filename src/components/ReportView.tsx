@@ -473,10 +473,12 @@ const ReportView: React.FC<ReportViewProps> = ({ assessment, onBack, onEdit }) =
                )}
             </div>
             <div className="v5-plan-bullets">
-              {(assessment.recommendations?.some(r => r.startsWith('ITEM:')) 
+              {(assessment.recommendations?.some(r => r.startsWith('ITEM:'))
                 ? assessment.recommendations.filter(r => r.startsWith('ITEM:')).map(i => i.replace('ITEM: ', ''))
-                : getPlanBullets(assessment.recommendations?.find(r => r.startsWith('PLAN:'))?.replace('PLAN: ', '') || '')
-              ).map((bullet, idx) => (
+                : (assessment.report_snapshot?.treatmentGoalTags?.length > 0
+                    ? assessment.report_snapshot.treatmentGoalTags
+                    : getPlanBullets(assessment.recommendations?.find(r => r.startsWith('PLAN:'))?.replace('PLAN: ', '') || ''))
+              ).map((bullet: string, idx: number) => (
                 <div key={idx} className="v5-pb-item"><span>✓</span> {bullet}</div>
               ))}
             </div>
