@@ -162,7 +162,7 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onSuccess, initialData 
   const addTag = (setList: React.Dispatch<React.SetStateAction<string[]>>, value: string) => {
     const trimmed = value.trim();
     if (!trimmed) return;
-    setList(prev => prev.includes(trimmed) ? prev : [...prev, trimmed]);
+    setList(prev => [...prev, trimmed]);
   };
 
   const removeTag = (setList: React.Dispatch<React.SetStateAction<string[]>>, tag: string) => {
@@ -658,7 +658,7 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onSuccess, initialData 
                         e.preventDefault();
                         const val = diagnosisInputRef.current?.value.trim() ?? '';
                         if (val) {
-                          setDiagnosisTags(prev => prev.includes(val) ? prev : [...prev, val]);
+                          setDiagnosisTags(prev => [...prev, val]);
                           if (diagnosisInputRef.current) diagnosisInputRef.current.value = '';
                         }
                       }
@@ -673,7 +673,7 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onSuccess, initialData 
                       e.preventDefault();
                       const val = diagnosisInputRef.current?.value.trim() ?? '';
                       if (val) {
-                        setDiagnosisTags(prev => prev.includes(val) ? prev : [...prev, val]);
+                        setDiagnosisTags(prev => [...prev, val]);
                         if (diagnosisInputRef.current) diagnosisInputRef.current.value = '';
                       }
                     }}
@@ -728,7 +728,7 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onSuccess, initialData 
                         e.preventDefault();
                         const val = goalInputRef.current?.value.trim() ?? '';
                         if (val) {
-                          setTreatmentGoalTags(prev => prev.includes(val) ? prev : [...prev, val]);
+                          setTreatmentGoalTags(prev => [...prev, val]);
                           if (goalInputRef.current) goalInputRef.current.value = '';
                         }
                       }
@@ -742,7 +742,7 @@ const AssessmentForm: React.FC<AssessmentFormProps> = ({ onSuccess, initialData 
                       e.preventDefault();
                       const val = goalInputRef.current?.value.trim() ?? '';
                       if (val) {
-                        setTreatmentGoalTags(prev => prev.includes(val) ? prev : [...prev, val]);
+                        setTreatmentGoalTags(prev => [...prev, val]);
                         if (goalInputRef.current) goalInputRef.current.value = '';
                       }
                     }}
